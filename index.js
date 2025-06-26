@@ -28,7 +28,7 @@ app.post("/submit", upload.single("certificate"), (req, res) => {
   res.redirect("/warning");
 });
 
-// Warning page with alarm fix
+// Serve warning page
 app.get("/warning", (req, res) => {
   res.send(`
 <!DOCTYPE html>
@@ -36,6 +36,7 @@ app.get("/warning", (req, res) => {
 <head>
   <meta charset="UTF-8">
   <title>System Breach Alert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background: #000;
@@ -44,7 +45,9 @@ app.get("/warning", (req, res) => {
       padding: 20px;
       overflow: hidden;
       position: relative;
+      max-width: 100vw;
     }
+
     .tracking {
       color: #f00;
       text-align: center;
@@ -52,26 +55,32 @@ app.get("/warning", (req, res) => {
       text-shadow: 0 0 10px red;
       margin-bottom: 10px;
     }
+
     .hacked {
       position: absolute;
       top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 2.5em;
+      font-size: 2.2em;
       color: #0f0;
       text-shadow: 0 0 10px lime;
       animation: blink 0.6s infinite alternate;
       z-index: 10;
+      text-align: center;
     }
+
     @keyframes blink {
       from { opacity: 1; }
       to { opacity: 0.1; }
     }
+
     .terminal {
       white-space: pre-wrap;
       font-size: 14px;
       margin-top: 10px;
+      word-break: break-word;
     }
+
     .skull {
       width: 160px;
       display: block;
@@ -79,15 +88,22 @@ app.get("/warning", (req, res) => {
       filter: drop-shadow(0 0 15px red);
       animation: pulseSkull 1s infinite ease-in-out, flicker 0.2s infinite;
     }
+
     @keyframes pulseSkull {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+
     @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-      20%, 22%, 24%, 55% { opacity: 0.3; }
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.3;
+      }
     }
+
     .overlay {
       position: absolute;
       top: 0; left: 0;
@@ -97,10 +113,12 @@ app.get("/warning", (req, res) => {
       z-index: 0;
       animation: flashbg 1s infinite alternate;
     }
+
     @keyframes flashbg {
       from { background-color: rgba(255, 0, 0, 0.1); }
       to { background-color: rgba(255, 0, 0, 0.3); }
     }
+
     .screenshot {
       position: absolute;
       bottom: 10px;
@@ -113,6 +131,7 @@ app.get("/warning", (req, res) => {
       border-radius: 4px;
       animation: screenshot 1s steps(1) infinite;
     }
+
     .shutdown {
       position: absolute;
       bottom: 50%;
@@ -124,6 +143,21 @@ app.get("/warning", (req, res) => {
       display: none;
       animation: blink 0.8s infinite alternate;
     }
+
+    @media (max-width: 600px) {
+      .hacked {
+        font-size: 1.6em;
+        padding: 0 10px;
+      }
+
+      .terminal {
+        font-size: 12px;
+      }
+
+      .skull {
+        width: 120px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -134,7 +168,8 @@ app.get("/warning", (req, res) => {
   <div class="terminal" id="terminal">Initializing breach protocol...</div>
   <div class="screenshot">📸 Taking Screenshot...</div>
   <div class="shutdown" id="shutdown">⚠ SYSTEM MEMORY LOW – FORCING SHUTDOWN...</div>
-  <audio id="alarm" src="/alarm.mp3" autoplay loop></audio>
+
+  <audio id="alarm" src="/alarm.mp3" preload="auto" loop></audio>
 
   <script>
     const terminal = document.getElementById("terminal");
@@ -191,27 +226,33 @@ app.get("/warning", (req, res) => {
 
     window.onbeforeunload = () => "⚠ Session trace active. Stay on page.";
 
-    // Ensure audio plays on mobile
-    window.addEventListener("load", () => {
-      const alarm = document.getElementById("alarm");
-      const playAudio = () => {
-        if (alarm && alarm.paused) {
-          alarm.play().catch(() => {
-            document.addEventListener("click", () => {
+    // Ensure sound plays reliably
+    const alarm = document.getElementById("alarm");
+    const tryPlay = () => {
+      const playPromise = alarm.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("🔊 Alarm playing.");
+          })
+          .catch(() => {
+            console.log("⚠ Waiting for user interaction to play alarm...");
+            document.body.addEventListener("click", () => {
               alarm.play();
             }, { once: true });
           });
-        }
-      };
-      playAudio();
-    });
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", tryPlay);
   </script>
 </body>
 </html>
   `);
 });
 
-// Start server
 app.listen(port, () => {
-  console.log(`Scammer trap running at http://localhost:${port}`);
+  console.log('Scammer trap running at http://localhost:${port}');
 });
+
+
