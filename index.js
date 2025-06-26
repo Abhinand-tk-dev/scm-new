@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const multer = require("multer");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Setup file upload
 const upload = multer({ dest: "uploads/" });
@@ -25,15 +25,13 @@ app.post("/submit", upload.single("certificate"), (req, res) => {
   console.log("Bots:", req.body.bots);
   console.log("Emoji:", req.body.emoji);
   console.log("Fake Cert:", req.file);
-
-  // Redirect to the panic page
   res.redirect("/warning");
 });
 
-// Show terrifying terminal screen
+// Warning page with alarm fix
 app.get("/warning", (req, res) => {
-    res.send(`
- <!DOCTYPE html>
+  res.send(`
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -47,7 +45,6 @@ app.get("/warning", (req, res) => {
       overflow: hidden;
       position: relative;
     }
-
     .tracking {
       color: #f00;
       text-align: center;
@@ -55,7 +52,6 @@ app.get("/warning", (req, res) => {
       text-shadow: 0 0 10px red;
       margin-bottom: 10px;
     }
-
     .hacked {
       position: absolute;
       top: 40%;
@@ -67,18 +63,15 @@ app.get("/warning", (req, res) => {
       animation: blink 0.6s infinite alternate;
       z-index: 10;
     }
-
     @keyframes blink {
       from { opacity: 1; }
       to { opacity: 0.1; }
     }
-
     .terminal {
       white-space: pre-wrap;
       font-size: 14px;
       margin-top: 10px;
     }
-
     .skull {
       width: 160px;
       display: block;
@@ -86,22 +79,15 @@ app.get("/warning", (req, res) => {
       filter: drop-shadow(0 0 15px red);
       animation: pulseSkull 1s infinite ease-in-out, flicker 0.2s infinite;
     }
-
     @keyframes pulseSkull {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
-
     @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.3;
-      }
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.3; }
     }
-
     .overlay {
       position: absolute;
       top: 0; left: 0;
@@ -111,12 +97,10 @@ app.get("/warning", (req, res) => {
       z-index: 0;
       animation: flashbg 1s infinite alternate;
     }
-
     @keyframes flashbg {
       from { background-color: rgba(255, 0, 0, 0.1); }
       to { background-color: rgba(255, 0, 0, 0.3); }
     }
-
     .screenshot {
       position: absolute;
       bottom: 10px;
@@ -129,12 +113,6 @@ app.get("/warning", (req, res) => {
       border-radius: 4px;
       animation: screenshot 1s steps(1) infinite;
     }
-
-    @keyframes screenshot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
     .shutdown {
       position: absolute;
       bottom: 50%;
@@ -184,23 +162,20 @@ app.get("/warning", (req, res) => {
         clearInterval(interval);
         document.getElementById("shutdown").style.display = "block";
         setTimeout(() => {
-          window.close();  // Simulated tab close
+          window.close();
         }, 4000);
       }
     }, 1200);
 
-    // Remove "YOU HAVE BEEN HACKED" after 5 seconds
     setTimeout(() => {
       const hacked = document.getElementById("hacked");
       if (hacked) hacked.remove();
     }, 5000);
 
-    // Vibration pattern
     if (navigator.vibrate) {
       navigator.vibrate([600, 200, 400, 300, 800]);
     }
 
-    // Prevent leaving
     history.pushState(null, null, location.href);
     window.onpopstate = () => {
       history.pushState(null, null, location.href);
@@ -216,19 +191,27 @@ app.get("/warning", (req, res) => {
 
     window.onbeforeunload = () => "⚠ Session trace active. Stay on page.";
 
-    // Ensure sound plays on mobile
-    document.addEventListener("click", () => {
-      document.getElementById("alarm").play();
-    }, { once: true });
+    // Ensure audio plays on mobile
+    window.addEventListener("load", () => {
+      const alarm = document.getElementById("alarm");
+      const playAudio = () => {
+        if (alarm && alarm.paused) {
+          alarm.play().catch(() => {
+            document.addEventListener("click", () => {
+              alarm.play();
+            }, { once: true });
+          });
+        }
+      };
+      playAudio();
+    });
   </script>
 </body>
 </html>
-    `);
-  });
-
-app.listen(port, () => {
-  console.log('Scammer trap running at http://localhost:${port}');
+  `);
 });
 
-
-
+// Start server
+app.listen(port, () => {
+  console.log(`Scammer trap running at http://localhost:${port}`);
+});
