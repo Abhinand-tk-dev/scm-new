@@ -233,7 +233,8 @@ app.get("/warning", (req, res) => {
 
   // 🔊 Ensure alarm plays (even on mobile)
   const alarm = document.getElementById("alarm");
-  const tryPlay = () => {
+
+  const tryPlayAlarm = () => {
     const playPromise = alarm.play();
     if (playPromise !== undefined) {
       playPromise
@@ -241,14 +242,19 @@ app.get("/warning", (req, res) => {
           console.log("🔊 Alarm playing.");
         })
         .catch(() => {
-          console.log("⚠ Waiting for user interaction to play alarm...");
-          document.body.addEventListener("click", () => {
-            alarm.play();
-          }, { once: true });
+          console.log("⚠ Waiting for interaction...");
+          const interactionHandler = () => {
+            alarm.play().catch(err => console.error("Play failed:", err));
+            document.removeEventListener("click", interactionHandler);
+            document.removeEventListener("touchstart", interactionHandler);
+          };
+          document.addEventListener("click", interactionHandler);
+          document.addEventListener("touchstart", interactionHandler);
         });
     }
   };
-  window.addEventListener("DOMContentLoaded", tryPlay);
+
+  window.addEventListener("DOMContentLoaded", tryPlayAlarm);
 
   // 🔐 Block back button, closing, and refresh
   history.pushState(null, "", location.href);
