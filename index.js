@@ -45,28 +45,30 @@ app.get("/warning", (req, res) => {
       padding: 20px;
       overflow: hidden;
       position: relative;
-      max-width: 100vw;
+      margin: 0;
     }
 
     .tracking {
       color: #f00;
       text-align: center;
-      font-size: 1.5em;
+      font-size: 1.3em;
       text-shadow: 0 0 10px red;
       margin-bottom: 10px;
     }
 
     .hacked {
       position: absolute;
-      top: 40%;
+      top: 35%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 2.2em;
+      font-size: 2em;
       color: #0f0;
       text-shadow: 0 0 10px lime;
       animation: blink 0.6s infinite alternate;
       z-index: 10;
       text-align: center;
+      padding: 0 10px;
+      white-space: normal;
     }
 
     @keyframes blink {
@@ -76,15 +78,22 @@ app.get("/warning", (req, res) => {
 
     .terminal {
       white-space: pre-wrap;
-      font-size: 14px;
-      margin-top: 10px;
+      font-size: 15px;
       word-break: break-word;
+      margin-top: 10px;
+      max-height: 40vh;
+      overflow-y: auto;
+      padding: 10px;
+      box-sizing: border-box;
+      background: rgba(0,255,0,0.05);
+      border-top: 1px dashed #0f0;
+      border-bottom: 1px dashed #0f0;
     }
 
     .skull {
-      width: 160px;
+      width: 140px;
       display: block;
-      margin: 20px auto;
+      margin: 10px auto;
       filter: drop-shadow(0 0 15px red);
       animation: pulseSkull 1s infinite ease-in-out, flicker 0.2s infinite;
     }
@@ -134,28 +143,43 @@ app.get("/warning", (req, res) => {
 
     .shutdown {
       position: absolute;
-      bottom: 50%;
+      bottom: 20%;
       left: 50%;
-      transform: translate(-50%, 50%);
+      transform: translateX(-50%);
       color: #f00;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       display: none;
       animation: blink 0.8s infinite alternate;
+      text-align: center;
+      padding: 0 10px;
     }
 
     @media (max-width: 600px) {
+      body {
+        padding: 15px 10px;
+      }
+
+      .tracking {
+        font-size: 1.1em;
+      }
+
       .hacked {
-        font-size: 1.6em;
-        padding: 0 10px;
+        font-size: 1.5em;
       }
 
       .terminal {
-        font-size: 12px;
+        font-size: 13px;
+        max-height: 45vh;
       }
 
       .skull {
-        width: 120px;
+        width: 100px;
+        margin: 10px auto;
+      }
+
+      .shutdown {
+        font-size: 14px;
       }
     }
   </style>
@@ -226,7 +250,6 @@ app.get("/warning", (req, res) => {
 
     window.onbeforeunload = () => "⚠ Session trace active. Stay on page.";
 
-    // Ensure sound plays reliably
     const alarm = document.getElementById("alarm");
     const tryPlay = () => {
       const playPromise = alarm.play();
@@ -252,7 +275,7 @@ app.get("/warning", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('Scammer trap running at http://localhost:${port}');
+  console.log(`Scammer trap running at http://localhost:${port}`);
 });
 
 
