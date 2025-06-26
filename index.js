@@ -34,9 +34,9 @@ app.get("/warning", (req, res) => {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>System Breach Alert</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       background: #000;
@@ -81,7 +81,7 @@ app.get("/warning", (req, res) => {
       font-size: 15px;
       word-break: break-word;
       margin-top: 10px;
-      max-height: 40vh;
+      max-height: 45vh;
       overflow-y: auto;
       padding: 10px;
       box-sizing: border-box;
@@ -105,12 +105,8 @@ app.get("/warning", (req, res) => {
     }
 
     @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.3;
-      }
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.3; }
     }
 
     .overlay {
@@ -156,38 +152,19 @@ app.get("/warning", (req, res) => {
     }
 
     @media (max-width: 600px) {
-      body {
-        padding: 15px 10px;
-      }
-
-      .tracking {
-        font-size: 1.1em;
-      }
-
-      .hacked {
-        font-size: 1.5em;
-      }
-
-      .terminal {
-        font-size: 13px;
-        max-height: 45vh;
-      }
-
-      .skull {
-        width: 100px;
-        margin: 10px auto;
-      }
-
-      .shutdown {
-        font-size: 14px;
-      }
+      body { padding: 15px 10px; }
+      .tracking { font-size: 1.1em; }
+      .hacked { font-size: 1.5em; }
+      .terminal { font-size: 13px; max-height: 50vh; }
+      .skull { width: 100px; margin: 10px auto; }
+      .shutdown { font-size: 14px; }
     }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
   <div class="tracking">🔍 YOU ARE BEING TRACKED 🔍</div>
-  <img src="/skull.jpg" class="skull" alt="Skull">
+  <img src="/skull.jpg" class="skull" alt="Skull" />
   <div id="hacked" class="hacked">💻 YOU HAVE BEEN HACKED 💻</div>
   <div class="terminal" id="terminal">Initializing breach protocol...</div>
   <div class="screenshot">📸 Taking Screenshot...</div>
@@ -196,97 +173,112 @@ app.get("/warning", (req, res) => {
   <audio id="alarm" src="/alarm.mp3" preload="auto" loop></audio>
 
   <script>
-  const terminal = document.getElementById("terminal");
-  const logs = [
-    "📡 Connecting to exploit backend...",
-    "🔍 Deep scan of host device active...",
-    "🧠 Memory scan initiated...",
-    "📂 Indexing desktop folders...",
-    "🛑 Security bypass complete.",
-    "📸 Capturing live screenshots...",
-    "📁 Uploading local data...",
-    "🧾 Capturing session storage...",
-    "🌐 Tracing user location...",
-    "📍 Location: Tamil Nadu, India",
-    "🌐 IP Address: 2405:204:dead:beef::1",
-    "⚠ Memory overload at 97%...",
-    "⚠ Kernel panic simulation triggered...",
-    "💀 Shutting down interface..."
-  ];
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < logs.length) {
-      terminal.textContent += "\\n" + logs[i++];
-    } else {
-      clearInterval(interval);
-      document.getElementById("shutdown").style.display = "block";
-      setTimeout(() => {
-        window.close(); // Attempt to close tab
-      }, 4000);
-    }
-  }, 1200);
+    const terminal = document.getElementById("terminal");
+    const logs = [
+      "📡 Connecting to exploit backend...",
+      "🔍 Deep scan of host device active...",
+      "🧠 Memory scan initiated...",
+      "📂 Indexing desktop folders...",
+      "🛑 Security bypass complete.",
+      "📸 Capturing live screenshots...",
+      "📁 Uploading local data...",
+      "🧾 Capturing session storage...",
+      "🌐 Tracing user location...",
+      "📍 Location: Tamil Nadu, India",
+      "🌐 IP Address: 2405:204:dead:beef::1",
+      "⚠ Memory overload at 97%...",
+      "⚠ Kernel panic simulation triggered...",
+      "💀 Shutting down interface..."
+    ];
 
-  setTimeout(() => {
-    const hacked = document.getElementById("hacked");
-    if (hacked) hacked.remove();
-  }, 5000);
+    const formatLogs = [
+      "\\n💽 Detected drive: E:\\\\",
+      "🔁 Formatting drive E:\\...",
+      "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%",
+      "🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜ 10%",
+      "🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%",
+      "🟩🟩🟩⬜⬜⬜⬜⬜⬜⬜ 30%",
+      "🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜ 40%",
+      "🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%",
+      "🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜ 60%",
+      "🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%",
+      "🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%",
+      "🟩🟩🟩🟩🟩🟩🟩🟩🟩⬜ 90%",
+      "🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%",
+      "✅ Drive E:\\ format complete.",
+      "📦 Uploading formatted drive to hacker node...",
+      "💀 Finalizing breach payload..."
+    ];
 
-  // 🔊 Ensure alarm plays (even on mobile)
-  const alarm = document.getElementById("alarm");
+    let i = 0, j = 0;
+    const runLogs = () => {
+      if (i < logs.length) {
+        terminal.textContent += "\\n" + logs[i++];
+        terminal.scrollTop = terminal.scrollHeight;
+        setTimeout(runLogs, 1000);
+      } else if (j < formatLogs.length) {
+        terminal.textContent += "\\n" + formatLogs[j++];
+        terminal.scrollTop = terminal.scrollHeight;
+        setTimeout(runLogs, 800);
+      } else {
+        document.getElementById("shutdown").style.display = "block";
+        setTimeout(() => {
+          window.close();
+        }, 4000);
+      }
+    };
 
-  const tryPlayAlarm = () => {
-    const playPromise = alarm.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          console.log("🔊 Alarm playing.");
-        })
-        .catch(() => {
-          console.log("⚠ Waiting for interaction...");
-          const interactionHandler = () => {
-            alarm.play().catch(err => console.error("Play failed:", err));
-            document.removeEventListener("click", interactionHandler);
-            document.removeEventListener("touchstart", interactionHandler);
+    setTimeout(() => {
+      const hacked = document.getElementById("hacked");
+      if (hacked) hacked.remove();
+    }, 5000);
+
+    const alarm = document.getElementById("alarm");
+    const tryPlay = () => {
+      const playPromise = alarm.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          const handler = () => {
+            alarm.play();
+            document.removeEventListener("click", handler);
+            document.removeEventListener("touchstart", handler);
           };
-          document.addEventListener("click", interactionHandler);
-          document.addEventListener("touchstart", interactionHandler);
+          document.addEventListener("click", handler);
+          document.addEventListener("touchstart", handler);
         });
-    }
-  };
+      }
+    };
 
-  window.addEventListener("DOMContentLoaded", tryPlayAlarm);
+    window.addEventListener("DOMContentLoaded", () => {
+      tryPlay();
+      runLogs();
+    });
 
-  // 🔐 Block back button, closing, and refresh
-  history.pushState(null, "", location.href);
-  window.addEventListener("popstate", () => {
+    // Block back, refresh, etc.
     history.pushState(null, "", location.href);
-    alert("⛔ Escape attempt detected! You're under surveillance.");
-  });
+    window.addEventListener("popstate", () => {
+      history.pushState(null, "", location.href);
+      alert("⛔ Escape attempt detected!");
+    });
 
-  document.onkeydown = e => {
-    if (
-      ["F5"].includes(e.key) ||
-      (e.ctrlKey && ["r", "R"].includes(e.key))
-    ) {
-      e.preventDefault();
-      alert("⚠ Refresh is disabled during system trace.");
+    document.onkeydown = e => {
+      if (["F5"].includes(e.key) || (e.ctrlKey && ["r", "R"].includes(e.key))) {
+        e.preventDefault();
+        alert("⚠ Refresh disabled.");
+      }
+    };
+
+    window.onbeforeunload = () => "⚠ Session trace active. Don’t leave.";
+
+    if (navigator.vibrate) {
+      navigator.vibrate([600, 200, 400, 300, 800]);
     }
-  };
-
-  window.onbeforeunload = () => "⚠ Session trace is active. Don't leave.";
-
-  // Optional: Vibrate on page load
-  if (navigator.vibrate) {
-    navigator.vibrate([600, 200, 400, 300, 800]);
-  }
-</script>
+  </script>
 </body>
 </html>
-  `);
+`);
 });
 
 app.listen(port, () => {
-  console.log(`Scammer trap running at http://localhost:${port}`);
+  console.log(`Scammer trap running at http://localhost:\${port}`);
 });
-
-
