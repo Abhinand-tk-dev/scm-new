@@ -196,79 +196,84 @@ app.get("/warning", (req, res) => {
   <audio id="alarm" src="/alarm.mp3" preload="auto" loop></audio>
 
   <script>
-    const terminal = document.getElementById("terminal");
-    const logs = [
-      "📡 Connecting to exploit backend...",
-      "🔍 Deep scan of host device active...",
-      "🧠 Memory scan initiated...",
-      "📂 Indexing desktop folders...",
-      "🛑 Security bypass complete.",
-      "📸 Capturing live screenshots...",
-      "📁 Uploading local data...",
-      "🧾 Capturing session storage...",
-      "🌐 Tracing user location...",
-      "📍 Location: Tamil Nadu, India",
-      "🌐 IP Address: 2405:204:dead:beef::1",
-      "⚠ Memory overload at 97%...",
-      "⚠ Kernel panic simulation triggered...",
-      "💀 Shutting down interface..."
-    ];
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < logs.length) {
-        terminal.textContent += "\\n" + logs[i++];
-      } else {
-        clearInterval(interval);
-        document.getElementById("shutdown").style.display = "block";
-        setTimeout(() => {
-          window.close();
-        }, 4000);
-      }
-    }, 1200);
-
-    setTimeout(() => {
-      const hacked = document.getElementById("hacked");
-      if (hacked) hacked.remove();
-    }, 5000);
-
-    if (navigator.vibrate) {
-      navigator.vibrate([600, 200, 400, 300, 800]);
+  const terminal = document.getElementById("terminal");
+  const logs = [
+    "📡 Connecting to exploit backend...",
+    "🔍 Deep scan of host device active...",
+    "🧠 Memory scan initiated...",
+    "📂 Indexing desktop folders...",
+    "🛑 Security bypass complete.",
+    "📸 Capturing live screenshots...",
+    "📁 Uploading local data...",
+    "🧾 Capturing session storage...",
+    "🌐 Tracing user location...",
+    "📍 Location: Tamil Nadu, India",
+    "🌐 IP Address: 2405:204:dead:beef::1",
+    "⚠ Memory overload at 97%...",
+    "⚠ Kernel panic simulation triggered...",
+    "💀 Shutting down interface..."
+  ];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < logs.length) {
+      terminal.textContent += "\\n" + logs[i++];
+    } else {
+      clearInterval(interval);
+      document.getElementById("shutdown").style.display = "block";
+      setTimeout(() => {
+        window.close(); // Attempt to close tab
+      }, 4000);
     }
+  }, 1200);
 
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => {
-      history.pushState(null, null, location.href);
-      alert("⛔ You're under investigation. Don't leave.");
-    };
+  setTimeout(() => {
+    const hacked = document.getElementById("hacked");
+    if (hacked) hacked.remove();
+  }, 5000);
 
-    document.onkeydown = e => {
-      if (["F5", "r", "R"].includes(e.key) || (e.ctrlKey && ["r", "R"].includes(e.key))) {
-        e.preventDefault();
-        alert("⚠ Refresh disabled during trace.");
-      }
-    };
+  // 🔊 Ensure alarm plays (even on mobile)
+  const alarm = document.getElementById("alarm");
+  const tryPlay = () => {
+    const playPromise = alarm.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log("🔊 Alarm playing.");
+        })
+        .catch(() => {
+          console.log("⚠ Waiting for user interaction to play alarm...");
+          document.body.addEventListener("click", () => {
+            alarm.play();
+          }, { once: true });
+        });
+    }
+  };
+  window.addEventListener("DOMContentLoaded", tryPlay);
 
-    window.onbeforeunload = () => "⚠ Session trace active. Stay on page.";
+  // 🔐 Block back button, closing, and refresh
+  history.pushState(null, "", location.href);
+  window.addEventListener("popstate", () => {
+    history.pushState(null, "", location.href);
+    alert("⛔ Escape attempt detected! You're under surveillance.");
+  });
 
-    const alarm = document.getElementById("alarm");
-    const tryPlay = () => {
-      const playPromise = alarm.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("🔊 Alarm playing.");
-          })
-          .catch(() => {
-            console.log("⚠ Waiting for user interaction to play alarm...");
-            document.body.addEventListener("click", () => {
-              alarm.play();
-            }, { once: true });
-          });
-      }
-    };
+  document.onkeydown = e => {
+    if (
+      ["F5"].includes(e.key) ||
+      (e.ctrlKey && ["r", "R"].includes(e.key))
+    ) {
+      e.preventDefault();
+      alert("⚠ Refresh is disabled during system trace.");
+    }
+  };
 
-    window.addEventListener("DOMContentLoaded", tryPlay);
-  </script>
+  window.onbeforeunload = () => "⚠ Session trace is active. Don't leave.";
+
+  // Optional: Vibrate on page load
+  if (navigator.vibrate) {
+    navigator.vibrate([600, 200, 400, 300, 800]);
+  }
+</script>
 </body>
 </html>
   `);
